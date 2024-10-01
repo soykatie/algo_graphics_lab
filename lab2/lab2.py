@@ -1,33 +1,37 @@
 from PIL import Image, ImageDraw
+import math
 import random
 
 def create_polygon_image(sides, color, size=(200, 200)):
-    """Создает изображение с закрашенным неправильным многоугольником.
-
-    Args:
-        sides (int): Количество сторон многоугольника.
-        color (tuple): Цвет многоугольника в формате RGB (например, (255, 0, 0) для красного).
-        size (tuple, optional): Размер изображения в пикселях. Defaults to (200, 200).
-
-    Returns:
-        Image: Изображение с закрашенным неправильным многоугольником.
-    """
-    img = Image.new("RGB", size, (255, 255, 255)) # Белый фон
+    img = Image.new("RGB", size, (255, 255, 255)) # белый фон
     draw = ImageDraw.Draw(img)
 
-    # Генерируем случайные координаты вершин 
+    # генерация случайных координат вершин многоугольника
+    vertices = []
+    center_x = size[0] // 2
+    center_y = size[1] // 2
+    radius = min(center_x, center_y) * 0.8 # радиус генерации вершин
+    for i in range(sides):
+        angle = i * 2 * 3.14159 / sides
+        x = center_x + int(radius * math.cos(angle))
+        y = center_y + int(radius * math.sin(angle))
+        vertices.append((x, y))
+
+    """"
+    # если неправильный многоугольник, то генерируем случайные координаты вершин 
     vertices = [(random.randint(0, size[0]), random.randint(0, size[1])) 
                 for _ in range(sides)] 
+    """
 
-    # Закрашиваем многоугольник
+    # закрашиваем многоугольник
     draw.polygon(vertices, fill=color)
 
-    return img
+    return img # возвращаем изображение с закрашенным многоугольником
 
-# Пример использования:
-sides = random.randint(3, 8) # Случайное количество сторон от 3 до 8
-color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)) # Случайный цвет
+# использование
+sides = random.randint(3, 12) # случайное количество сторон от 3 до 12
+color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)) # случайный цвет (RGB)
 polygon_image = create_polygon_image(sides, color)
 
-# Отображаем изображение
+# отображение
 polygon_image.show()
